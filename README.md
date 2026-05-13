@@ -6,6 +6,59 @@
 
 ---
 
+## 快速开始
+
+### 环境要求
+- **Qwen Code**（v0.14+）
+- **Python 3.8+**（仅用于 CSV/Markdown 导出脚本）
+
+### 安装（接入 Qwen Code）
+
+**方式一：直接引用本地路径**
+
+在 Qwen Code 对话中输入：
+```
+/add-skill /path/to/test-case-generator
+```
+
+或者在你的项目 `.qwen/skills/` 目录下创建符号链接：
+```bash
+ln -s /path/to/test-case-generator ~/.qwen/skills/test-case-generator
+```
+
+**方式二：配置 skills 目录**
+
+编辑 Qwen Code 的 `settings.json`，添加 skills 路径：
+```json
+{
+  "skills": {
+    "paths": ["/path/to/test-case-generator"]
+  }
+}
+```
+
+### 使用
+
+1. 启动 Qwen Code，进入目标项目目录
+2. 输入一段功能描述（或直接粘贴 `examples/input/需求描述.md` 的内容）
+3. Skill 自动激活，总控询问项目名称和输出格式后，全自动推进 10 个 Agent 流水线
+4. 产出在 `output/` 目录下：`测试设计文档.md` + `测试用例.csv`
+
+快速体验端到端样例：查看 `examples/` 目录。
+
+### 常见问题
+
+**Q: 首次运行经验库为空怎么办？**
+4 个读库 Agent 会检测到空库后自动降级为"跳过经验注入"模式，不影响主流程。第二轮开始经验库逐步积累，自动生效。
+
+**Q: 只想生成少量用例（轻量模式）？**
+在对话中加 `--light` 或说"轻量模式"，总控会跳过 Phase 2a-2d 四专员并行，改由 test-aggregator 直接从 test-architect 产出生成用例。详见下文"流水线模式"。
+
+**Q: Mac/Linux 能用吗？**
+可以。`tools/` 下的导出脚本已用 Python 重写，跨平台兼容。
+
+---
+
 ## 核心设计理念：人主导、AI 辅助
 
 AI 做体力活（拆解功能、建模型、写用例、格式化输出），人的专业判断贯穿全流程：
@@ -87,7 +140,9 @@ Phase 4: experience-evolver ────→ experience/（三类库增量更新�
                                   _experience-result.md
 ```
 
-**用户交互点仅两处：** 开始前问项目名称 + 问输出格式。其余全自动。
+**用户交互点仅三处：** 开始前问项目名称 + 问输出格式 + 是否轻量模式。其余全自动。
+
+> 💡 **轻量模式：** 说「轻量模式」或 `--light`，跳过四专员并行，直接 6 Agent 出结果（10-30 条用例）。详见 SKILL.md「流水线模式」。
 
 ---
 
@@ -221,17 +276,16 @@ test-case-generator/
 │   ├── methodology.md                    ← 测试方法工具箱
 │   └── output-templates.md               ← Markdown/CSV 模板
 └── tools/
-    ├── export-csv.ps1                    ← CSV 导出（9 列含测试标签）
-    └── export-md.ps1                     ← Markdown 导出
+    ├── export_csv.py                    ← CSV 导出（9 列含测试标签）
+    └── export_md.py                     ← Markdown 导出
 ```
 
 ---
 
 ## 触发方式
 
-在 Qwen Code 中提及以下关键词即可激活：
-- 需求文档、功能描述
-- 生成测试用例、测试设计
-- 需求分析、四步法
-- 等价类、边界值、路径分析
-- 测试点、流程/状态
+在 Qwen Code 中提及以下**强意图**关键词即可激活：
+- 生成测试用例、写测试用例、设计测试用例
+- 给我用例、输出测试用例
+
+> ⚠️ 注：单纯问测试概念（如"等价类是什么意思"）不会触发此 Skill。

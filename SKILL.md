@@ -1,6 +1,6 @@
 ---
 name: test-case-generator
-description: Use when user provides requirements documents, feature descriptions, or explicitly requests "generate test cases". Triggers: 需求文档, 功能描述, 生成测试用例, 测试设计, 需求分析, 四步法, 等价类, 边界值, 路径分析, 测试点, 流程/状态. Do NOT activate for programming syntax, environment setup, or non-test-design questions.
+description: Use when user explicitly requests to generate test cases from a feature description. Triggers: 生成测试用例, 写测试用例, 设计测试用例, 给我用例, 输出测试用例. Do NOT activate for general questions about testing concepts (e.g. "等价类是什么意思"), programming questions, or environment setup.
 metadata:
   short-description: 多Agent驱动测试用例生成（Harness编排）
 ---
@@ -39,7 +39,7 @@ Phase 3: data-exporter（子Agent）
     **Phase 3 出口校验（总控亲自执行，不调度子Agent）**
     ├── 读取 CSV 前 20 行 → 确认步骤列有实际换行（非分号拼接）
     ├── 验证含换行字段已被双引号包裹
-    ├── Format-Hex 验证 BOM（EF BB BF）
+    ├── 验证 BOM（xxd 或 python3 读前 3 字节 = EF BB BF）
     ├── 验证行分隔符为 CRLF
     └── 总行数校验
     ↓
@@ -52,9 +52,48 @@ Phase 0.5 由总控根据 `_context.md` 是否已包含详细功能说明来自�
 
 各子Agent 在运行时如经验库有数据则必读：feature-documenter 读 training-data.md（业务规则），test-architect 读 failure-cases.md（历史漏测），四专员读 templates.md（用例模板），gatekeeper 读 failure-cases.md（交叉校验）。
 
-**用户交互点（仅两处）：** 开始前问项目名称 + 问输出格式。其余 Phase 全部自动推进。
+---
+
+## 流水线模式
+
+技能提供两种模式，由用户在对话开始时选择（或通过触发词自动判定）：
+
+### 标准模式（默认）
+完整 10 Agent 流水线，适合：功能复杂、4 类测试点齐全、期望用例数 ≥30。
+
+### 轻量模式（`--light` / "轻量模式"）
+精简 6 Agent 流水线，适合：功能简单、期望用例数 <30、快速出结果。
+
+**触发方式：** 用户说「轻量模式」「快速模式」或附带 `--light`，总控自动切换。
+
+```
+Phase 1: test-architect（照常）
+    ↓
+Phase 2e: test-aggregator（直接从 _analysis.md 生成用例，跳过四专员）
+    ↓
+quality-gatekeeper（门禁简化：仅 L2 分类筛选 + L3 核心指标）
+    ↓
+Phase 3: data-exporter
+    ↓
+Phase 4: experience-evolver
+```
+
+轻量模式下：
+- 跳过 Phase 2a-2d 四专员并行调度
+- test-aggregator 直接从 `_analysis.md` 提取测试点并生成用例
+- quality-gatekeeper 仅执行 L2 分类筛选 + L3 核心三项（覆盖率/边界值/废弃率）
+- 用例数通常 10-30 条
+
+### 逃生口（异常降级）
+- Phase 2a-2d 某专员连续失败 2 次 → 该类型标记"无法覆盖"，aggregator 从 `_analysis.md` 补充基础用例
+- quality-gatekeeper 连续 FAIL 2 次 → 输出 PASS_WITH_WARNINGS，标记未达标项，继续 Pipeline
+- Phase 4 失败 → 记录日志，不阻塞交付物产出
 
 ---
+
+## 用户交互点
+
+**用户交互点（仅三处）：** 开始前问项目名称 + 问输出格式 + 是否使用轻量模式。其余 Phase 全部自动推进。
 
 ## 产物目录
 
@@ -64,10 +103,12 @@ Phase 0.5 由总控根据 `_context.md` 是否已包含详细功能说明来自�
 ├── output/        ← 交付物（测试设计文档.md, 测试用例.csv）
 └── experience/    ← 项目级经验库（_index.md, failure-cases.md, templates.md, training-data.md）
 
-[全局兜底] C:\Users\<用户名>\.orlando\test-case-generator\experience/
+[全局兜底] ~/.orlando/test-case-generator/experience/
 ```
 
 经验库由三类文件组成：翻车案例库 / 优质模板库 / 训练数据集。查找：项目级优先 → 全局兜底 → 初始化空库。归档时两边同步增量写入。
+
+**冷启动：** 首次运行时三类库均为空（或仅含索引头）。各读库 Agent 检测到空库后跳过经验注入，正常执行主流程。经验随使用次数自然积累。详见各 Agent prompt 中的「冷启动」分支。
 
 ---
 

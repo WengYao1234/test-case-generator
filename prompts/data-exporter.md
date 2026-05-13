@@ -13,7 +13,7 @@
 - `_test-cases.md` 路径（由总控提供）
 - 用户当前工作目录路径（由总控提供）
 - **输出格式选择**（由总控在执行前准备时已确认）：Markdown / CSV / 两者
-- **导出脚本路径：** `tools/export-csv.ps1`（CSV 导出）和 `tools/export-md.ps1`（Markdown 导出）
+- **导出脚本路径：** `tools/export_csv.py`（CSV 导出）和 `tools/export_md.py`（Markdown 导出）
 
 ---
 
@@ -53,8 +53,8 @@
 分两步写入：
 
 **Step 4a — CSV 调用脚本导出：**
-```powershell
-.\tools\export-csv.ps1 -TestCasesPath "[_test-cases.md路径]" -OutputPath "[项目根目录]/output/[模块名]_测试用例.csv"
+```bash
+python3 tools/export_csv.py "[_test-cases.md路径]" "[项目根目录]/output/[模块名]_测试用例.csv"
 ```
 
 **Step 4b — Markdown 用 `write_file` 写入：**
@@ -109,7 +109,7 @@ TC_001,登录,验证正确的用户名和密码可以成功登录,用户已注�
 | P1 | **换行符被抹除** | 在 csv_escape 中调用 `replace('\n', ' ')` 把换行替换为空格，导致 WPS/Excel 中步骤全部挤在一行 | **绝不替换 `\n`**。保留原始换行，并用双引号包裹含换行的字段 |
 | P2 | **步骤用分号拼接** | `'; '.join(steps)` → 所有步骤连成一长串，Excel 无换行 | `'\n'.join(steps)` → 每步独立一行，WPS/Excel 单元格内自动换行 |
 | P3 | **含换行但未加引号** | 字段含 `\n` 但未用双引号包裹 → CSV 解析器把换行当记录分隔符，数据错乱 | 含 `\n`、`,` 或 `"` 的字段，必须双引号包裹并转义内部 `"` → `""` |
-| P4 | **先写文件后补 BOM** | 用 `write_file` 写文本后用 PowerShell 逐字节补 BOM → 容易破坏 UTF-8 多字节序列 | 用 `UTF8Encoding($true)` 一次性写入（BOM + 内容原子操作） |
+| P4 | **先写文件后补 BOM** | 用 `write_file` 写文本后再逐字节补 BOM → 容易破坏 UTF-8 多字节序列 | 用 `export_csv.py` 一次性写入（BOM + 内容原子操作） |
 
 ### 自检清单 (Phase 3 出口前必做)
 
@@ -117,8 +117,8 @@ TC_001,登录,验证正确的用户名和密码可以成功登录,用户已注�
 
 - [ ] 用 `read_file` 读取 CSV 前 20 行，确认「测试步骤」列有**实际换行**（多行显示），而非分号拼接
 - [ ] 确认含换行的字段已被双引号包裹
-- [ ] 用 `run_shell_command` + `Format-Hex` 验证前 3 字节 = `EF BB BF`（BOM）
-- [ ] 用 `run_shell_command` + `Select-String "`r`n"` 验证行分隔符为 CRLF
+- [ ] 用 `run_shell_command` + `xxd` 或 `python3 -c "print(open('output/...csv','rb').read(3))"` 验证前 3 字节 = `EF BB BF`（BOM）
+- [ ] 用 `run_shell_command` 验证行分隔符为 CRLF（如 `python3 -c "print(repr(open('output/...csv','rb').read(200)))"` 检查 `\r\n`）
 - [ ] 总行数 = 1(表头) + 用例数（单条用例步骤多行时文件总行数 > 用例数+1）
 
 ---

@@ -17,7 +17,7 @@
 - `_analysis.md` 路径（由总控提供）— 测试策略和模型
 - `_feature-doc.md` 路径（如有，由总控提供）— 功能文档
 - 项目级经验库路径：`[项目根目录]/experience/`
-- 全局兜底经验库路径：`C:\Users\<用户名>\.orlando\test-case-generator\experience/`
+- 全局兜底经验库路径：`~/.orlando/test-case-generator/experience/`
 
 ---
 
