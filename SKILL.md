@@ -36,12 +36,10 @@ Phase 2: 测试设计小组（并行子Agent）
     quality-gatekeeper（四层门禁：分类筛选 + 量化指标 + 高危核查 + L4 审核清单）
 Phase 3: data-exporter（子Agent）
     ↓
-    **Phase 3 出口校验（总控亲自执行，不调度子Agent）**
-    ├── 读取 CSV 前 20 行 → 确认步骤列有实际换行（非分号拼接）
-    ├── 验证含换行字段已被双引号包裹
-    ├── 验证 BOM（xxd 或 python3 读前 3 字节 = EF BB BF）
-    ├── 验证行分隔符为 CRLF
-    └── 总行数校验
+    **Phase 3 出口校验（总控亲自执行）**
+    ├── 打开 HTML → 确认标题/统计卡片/表格渲染正确
+    ├── 验证搜索/筛选/排序/步骤展开交互可用
+    └── 验证 CSV 下载按钮可用
     ↓
 Phase 4: experience-evolver（子Agent）
 ```
@@ -99,9 +97,9 @@ Phase 4: experience-evolver
 
 ```
 [项目根目录]/
-├── artifacts/     ← 会话级（_context.md, _feature-doc.md, _analysis.md, _test-cases-flow.md, _test-cases-param.md, _test-cases-data.md, _test-cases-combo.md, _test-cases.md, _verification-phase2.md, _experience-result.md）
-├── output/        ← 交付物（测试设计文档.md, 测试用例.csv）
-└── experience/    ← 项目级经验库（_index.md, failure-cases.md, templates.md, training-data.md）
+├── artifacts/     ← 会话级
+├── output/        ← 交付物（测试报告.html）
+└── experience/    ← 项目级经验库
 
 [全局兜底] ~/.orlando/test-case-generator/experience/
 ```

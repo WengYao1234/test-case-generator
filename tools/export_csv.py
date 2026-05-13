@@ -39,8 +39,8 @@ def parse_test_cases(path: str) -> list[dict]:
         stripped = line.strip()
         if not stripped:
             continue
-        # 新用例行以 "| TC-" 开头
-        if re.match(r'^\|\s*TC-', stripped):
+        # 新用例行以 "| TC-" 或 "| TC_" 开头
+        if re.match(r'^\|\s*TC[-_]', stripped):
             if buffer:
                 cases.append(_parse_row(buffer))
             buffer = stripped

@@ -2,7 +2,7 @@
 
 ## 一句话概述
 
-一个**多 Agent 协作、Harness 编排**的测试用例自动生成技能。你提供一段功能描述，它走完 10 个子Agent 的流水线，从无到有输出结构化的测试设计文档和 CSV 用例文件，内置五层质量门禁和完整经验闭环。
+一个**多 Agent 协作、Harness 编排**的测试用例自动生成技能。你提供一段功能描述，它走完 10 个子Agent 的流水线，从无到有输出**交互式 HTML 测试报告**（内置搜索/筛选/排序/CSV 下载），内置五层质量门禁和完整经验闭环。
 
 ---
 
@@ -42,9 +42,9 @@ ln -s /path/to/test-case-generator ~/.qwen/skills/test-case-generator
 1. 启动 Qwen Code，进入目标项目目录
 2. 输入一段功能描述（或直接粘贴 `examples/input/需求描述.md` 的内容）
 3. Skill 自动激活，总控询问项目名称和输出格式后，全自动推进 10 个 Agent 流水线
-4. 产出在 `output/` 目录下：`测试设计文档.md` + `测试用例.csv`
+4. 产出在 `output/` 目录下：`测试报告.html`（双击浏览器打开即可）
 
-快速体验端到端样例：查看 `examples/` 目录。
+> 💡 HTML 报告包含：仪表盘统计、交互式用例表格（搜索/筛选/排序/展开）、一键 CSV 下载按钮。
 
 ### 常见问题
 
@@ -134,8 +134,8 @@ Phase 2e: test-aggregator ──────→ _test-cases.md （去重+扩展+
 Phase 2: quality-gatekeeper ────→ _verification-phase2.md + L4 审核清单
    │                              （读 failure-cases.md 交叉校验）
    │
-Phase 3: data-exporter ─────────→ output/测试设计文档.md + 测试用例.csv
-   │                              （CSV 含测试标签列）
+Phase 3: data-exporter ─────────→ output/测试报告.html
+   │                              （HTML 报告：仪表盘 + 交互表格 + CSV 下载）
 Phase 4: experience-evolver ────→ experience/（三类库增量更新）
                                   _experience-result.md
 ```
@@ -276,8 +276,9 @@ test-case-generator/
 │   ├── methodology.md                    ← 测试方法工具箱
 │   └── output-templates.md               ← Markdown/CSV 模板
 └── tools/
-    ├── export_csv.py                    ← CSV 导出（9 列含测试标签）
-    └── export_md.py                     ← Markdown 导出
+    ├── export_html.py                  ← HTML 测试报告（主输出）
+    ├── export_csv.py                   ← CSV 导出（可选）
+    └── export_md.py                    ← Markdown 导出（兼容）
 ```
 
 ---
