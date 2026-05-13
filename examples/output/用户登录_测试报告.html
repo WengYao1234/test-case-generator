@@ -96,7 +96,7 @@ tr:hover { background: #f8fafc; }
 
 <div class="header">
   <h1>📋 用户登录 — 测试设计报告</h1>
-  <div class="meta">生成时间: 2026-05-13 22:30 · 共 25 条用例</div>
+  <div class="meta">生成时间: 2026-05-13 23:32 · 共 25 条用例</div>
 </div>
 
 <!-- Stats Cards -->
@@ -128,15 +128,15 @@ tr:hover { background: #f8fafc; }
     <h3>🍩 用例类型分布</h3>
     <div class="pie-wrap">
       <svg width="140" height="140" viewBox="0 0 36 36">
-        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="44.0 56.0" stroke-dashoffset="-0" transform="rotate(-90 18 18)"/>
-<circle cx="18" cy="18" r="15.9" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="16.0 84.0" stroke-dashoffset="-44.0" transform="rotate(-90 18 18)"/>
-<circle cx="18" cy="18" r="15.9" fill="none" stroke="#8b5cf6" stroke-width="3" stroke-dasharray="40.0 60.0" stroke-dashoffset="-60.0" transform="rotate(-90 18 18)"/>
+        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#3b82f6" stroke-width="3" stroke-dasharray="40.0 60.0" stroke-dashoffset="-0" transform="rotate(-90 18 18)"/>
+<circle cx="18" cy="18" r="15.9" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="44.0 56.0" stroke-dashoffset="-40.0" transform="rotate(-90 18 18)"/>
+<circle cx="18" cy="18" r="15.9" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="16.0 84.0" stroke-dashoffset="-84.0" transform="rotate(-90 18 18)"/>
       </svg>
       <div class="pie-legend">
-        <div><span class="dot" style="background:#3b82f6"></span> 功能 0</div>
+        <div><span class="dot" style="background:#3b82f6"></span> 功能 10</div>
         <div><span class="dot" style="background:#f59e0b"></span> 负向 11</div>
         <div><span class="dot" style="background:#ef4444"></span> 安全 4</div>
-        <div><span class="dot" style="background:#8b5cf6"></span> 其他 10</div>
+        
       </div>
     </div>
   </div>
@@ -187,7 +187,7 @@ tr:hover { background: #f8fafc; }
 
 <!-- Footer -->
 <div class="footer">
-  由 Test Case Generator 生成 · 2026-05-13 22:30
+  由 Test Case Generator 生成 · 2026-05-13 23:32
 </div>
 
 </div>
@@ -296,7 +296,7 @@ function downloadCSV() {
   const header = '\uFEFF用例ID,模块,用例标题,前置条件,测试步骤,预期结果,优先级,用例类型,测试标签';
   const rows = cases.map(c => {
     const esc = s => {
-      s = (s||'').replace(/\n/g,'\n').replace(/"/g,'""');
+      s = (s||'').replace(/"/g,'""');
       return /[",\n]/.test(s) ? '"'+s+'"' : s;
     };
     return [esc(c.id),esc(c.module),esc(c.title),esc(c.precon),esc(c.steps),esc(c.expect),c.priority,c.type,c.tags||''].join(',');

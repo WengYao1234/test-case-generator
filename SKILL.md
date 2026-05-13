@@ -1,6 +1,6 @@
 ---
 name: test-case-generator
-description: Use when user explicitly requests to generate test cases from a feature description. Triggers: 生成测试用例, 写测试用例, 设计测试用例, 给我用例, 输出测试用例. Do NOT activate for general questions about testing concepts (e.g. "等价类是什么意思"), programming questions, or environment setup.
+description: 当用户明确请求从功能描述生成测试用例时激活。触发词：生成测试用例, 写测试用例, 设计测试用例, 给我用例, 输出测试用例。不响应测试概念提问（如"等价类是什么意思"）、编程问题或环境配置问题。
 metadata:
   short-description: 多Agent驱动测试用例生成（Harness编排）
 ---
@@ -87,8 +87,6 @@ Phase 4: experience-evolver
 - quality-gatekeeper 连续 FAIL 2 次 → 输出 PASS_WITH_WARNINGS，标记未达标项，继续 Pipeline
 - Phase 4 失败 → 记录日志，不阻塞交付物产出
 
----
-
 ## 用户交互点
 
 **用户交互点（仅三处）：** 开始前问项目名称 + 问输出格式 + 是否使用轻量模式。其余 Phase 全部自动推进。
@@ -101,14 +99,12 @@ Phase 4: experience-evolver
 ├── output/        ← 交付物（测试报告.html）
 └── experience/    ← 项目级经验库
 
-[全局兜底] ~/.orlando/test-case-generator/experience/
+[全局兜底] ~/.qwen/skills/test-case-generator/experience/
 ```
 
 经验库由三类文件组成：翻车案例库 / 优质模板库 / 训练数据集。查找：项目级优先 → 全局兜底 → 初始化空库。归档时两边同步增量写入。
 
 **冷启动：** 首次运行时三类库均为空（或仅含索引头）。各读库 Agent 检测到空库后跳过经验注入，正常执行主流程。经验随使用次数自然积累。详见各 Agent prompt 中的「冷启动」分支。
-
----
 
 ## 护栏
 

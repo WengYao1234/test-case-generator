@@ -65,20 +65,17 @@ def compute_stats(cases: list[dict]) -> dict:
     p1 = sum(1 for c in cases if 'P1' in c['priority'])
     p2 = sum(1 for c in cases if 'P2' in c['priority'])
 
-    flow = sum(1 for c in cases if '流程' in c['type'])
-    param = sum(1 for c in cases if '参数' in c['type'])
-    data_c = sum(1 for c in cases if '数据' in c['type'])
-    combo = sum(1 for c in cases if '组合' in c['type'])
+    func = sum(1 for c in cases if '功能' in c['type'])
     neg = sum(1 for c in cases if '负向' in c['type'])
     safe = sum(1 for c in cases if '安全' in c['type'])
+    other = total - func - neg - safe
 
     tagged = sum(1 for c in cases if c['tags'].strip())
 
     return {
         'total': total,
         'p0': p0, 'p1': p1, 'p2': p2,
-        'flow': flow, 'param': param, 'data': data_c, 'combo': combo,
-        'neg': neg, 'safe': safe,
+        'func': func, 'neg': neg, 'safe': safe, 'other': other,
         'tagged': tagged,
     }
 
@@ -229,10 +226,10 @@ tr:hover {{ background: #f8fafc; }}
         {_pie_svg(stats)}
       </svg>
       <div class="pie-legend">
-        <div><span class="dot" style="background:#3b82f6"></span> 功能 {stats['flow']+stats['param']+stats['data']+stats['combo']}</div>
+        <div><span class="dot" style="background:#3b82f6"></span> 功能 {stats['func']}</div>
         <div><span class="dot" style="background:#f59e0b"></span> 负向 {stats['neg']}</div>
         <div><span class="dot" style="background:#ef4444"></span> 安全 {stats['safe']}</div>
-        {'' if stats['total'] - stats['flow'] - stats['param'] - stats['data'] - stats['combo'] - stats['neg'] - stats['safe'] <= 0 else f'<div><span class="dot" style="background:#8b5cf6"></span> 其他 {stats["total"] - stats["flow"] - stats["param"] - stats["data"] - stats["combo"] - stats["neg"] - stats["safe"]}</div>'}
+        {'' if stats['other'] <= 0 else f'<div><span class="dot" style="background:#8b5cf6"></span> 其他 {stats["other"]}</div>'}
       </div>
     </div>
   </div>
@@ -392,7 +389,7 @@ function downloadCSV() {{
   const header = '\\uFEFF用例ID,模块,用例标题,前置条件,测试步骤,预期结果,优先级,用例类型,测试标签';
   const rows = cases.map(c => {{
     const esc = s => {{
-      s = (s||'').replace(/\\n/g,'\\n').replace(/"/g,'""');
+      s = (s||'').replace(/"/g,'""');
       return /[",\\n]/.test(s) ? '"'+s+'"' : s;
     }};
     return [esc(c.id),esc(c.module),esc(c.title),esc(c.precon),esc(c.steps),esc(c.expect),c.priority,c.type,c.tags||''].join(',');
@@ -420,10 +417,10 @@ def _pie_svg(stats: dict) -> str:
     if total == 0:
         return '<circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="3"/>'
 
-    func_cnt = stats['flow'] + stats['param'] + stats['data'] + stats['combo']
+    func_cnt = stats['func']
     neg = stats['neg']
     safe = stats['safe']
-    other = total - func_cnt - neg - safe
+    other = stats['other']
 
     segments = []
     if func_cnt: segments.append((func_cnt, '#3b82f6'))

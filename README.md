@@ -259,6 +259,8 @@ Phase 4: experience-evolver ────→ experience/（三类库增量更新�
 test-case-generator/
 ├── SKILL.md                              ← Harness 总控
 ├── README.md                             ← 本文件
+├── .archive/
+│   └── _archived_test-designer.md        ← 旧版（已归档）
 ├── prompts/
 │   ├── context-collector.md              ← Phase 0
 │   ├── feature-documenter.md             ← Phase 0.5（条件触发，读经验库）
@@ -270,8 +272,7 @@ test-case-generator/
 │   ├── test-aggregator.md                ← Phase 2e 汇总员
 │   ├── quality-gatekeeper.md             ← Phase 2 四层门禁（交叉校验）
 │   ├── data-exporter.md                  ← Phase 3
-│   ├── experience-evolver.md             ← Phase 4 三类库
-│   └── _archived_test-designer.md        ← 旧版（已归档）
+│   └── experience-evolver.md             ← Phase 4 三类库
 ├── references/
 │   ├── methodology.md                    ← 测试方法工具箱
 │   └── output-templates.md               ← Markdown/CSV 模板

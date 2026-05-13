@@ -27,7 +27,7 @@ HTML 报告**内嵌交互功能**（搜索、筛选、排序、CSV 下载），�
 
 ### Step 2: 生成 HTML 报告（默认输出）
 
-调用脚本生成自包含 HTML：
+调用脚本生成自包含 HTML。优先探测可用的 Python 命令（`python3` → `python` → `py -3`），然后执行：
 
 ```bash
 python3 tools/export_html.py "[_test-cases.md路径]" "[项目根目录]/output/[模块名]_测试报告.html" "[模块名]"
@@ -42,7 +42,7 @@ python3 tools/export_html.py "[_test-cases.md路径]" "[项目根目录]/output/
 
 ### Step 3: 生成 CSV（可选附加输出）
 
-若用户明确要求 CSV 文件，额外调用：
+若用户明确要求 CSV 文件，额外调用（同样遵循 python3 → python → py -3 探测）：
 
 ```bash
 python3 tools/export_csv.py "[_test-cases.md路径]" "[项目根目录]/output/[模块名]_测试用例.csv"
