@@ -309,26 +309,36 @@ const tagSelect = document.getElementById('filterTag');
 let sortCol = -1;
 let sortAsc = true;
 
+// ── Helpers ──
+function esc(s) {{ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }}
+function br(s) {{ return esc(s).replace(/\\n/g,'<br>'); }}
+
+// ── Render ──
 function renderTable(data) {{
   const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = data.map(c => {{
-    const tagsHtml = (c.tags || '').split(/[,;，；]/).filter(t => t.trim())
-      .map(t => `<span class="tag">${{t.trim()}}</span>`).join('');
-    const stepsHtml = c.steps
-      ? `<div class="steps-cell"><div class="steps-preview" onclick="this.nextElementSibling.classList.toggle('open');this.style.display='none'">${{c.steps.split('\\n').slice(0,2).join('<br>')}}<br><small>…点击展开</small></div><div class="steps-full">${{c.steps.replace(/\\n/g,'<br>')}}</div></div>`
-      : '';
-    return `<tr>
-      <td><code>${{c.id}}</code></td>
-      <td>${{c.module}}</td>
-      <td><strong>${{c.title}}</strong></td>
-      <td>${{c.precon || '—'}}</td>
-      <td>${{stepsHtml || '—'}}</td>
-      <td>${{c.expect ? c.expect.replace(/\\n/g,'<br>') : '—'}}</td>
-      <td><span class="pri-badge ${{c.priority}}">${{c.priority}}</span></td>
-      <td>${{c.type}}</td>
-      <td>${{tagsHtml || '—'}}</td>
-    </tr>`;
-  }}).join('');
+  const rows = [];
+  data.forEach(c => {{
+    const tags = (c.tags||'').split(/[,;，；]/).filter(t => t.trim());
+    const tagsHtml = tags.length ? tags.map(t => '<span class="tag">'+esc(t.trim())+'</span>').join('') : '—';
+    let stepsHtml = '—';
+    if (c.steps) {{
+      const preview = esc(c.steps.split('\\n').slice(0,2).join('\\n'));
+      const full = br(c.steps);
+      stepsHtml = '<div class="steps-cell"><div class="steps-preview" onclick="var n=this.nextElementSibling;n.classList.toggle(\'open\');this.style.display=n.classList.contains(\'open\')?\'none\':\'\'">'+preview+'<br><small>…点击展开</small></div><div class="steps-full">'+full+'</div></div>';
+    }}
+    rows.push('<tr>'+
+      '<td><code>'+esc(c.id)+'</code></td>'+
+      '<td>'+esc(c.module)+'</td>'+
+      '<td><strong>'+esc(c.title)+'</strong></td>'+
+      '<td>'+esc(c.precon||'—')+'</td>'+
+      '<td>'+stepsHtml+'</td>'+
+      '<td>'+(c.expect ? br(c.expect) : '—')+'</td>'+
+      '<td><span class="pri-badge '+esc(c.priority)+'">'+esc(c.priority)+'</span></td>'+
+      '<td>'+esc(c.type)+'</td>'+
+      '<td>'+tagsHtml+'</td>'+
+    '</tr>');
+  }});
+  tbody.innerHTML = rows.join('');
 }}
 
 function filterTable() {{
