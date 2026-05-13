@@ -88,7 +88,7 @@ def compute_stats(cases: list[dict]) -> dict:
 def generate_html(cases: list[dict], module_name: str) -> str:
     stats = compute_stats(cases)
     now = datetime.now().strftime('%Y-%m-%d %H:%M')
-    cases_json = json.dumps(cases, ensure_ascii=False)
+    cases_json = json.dumps(cases, ensure_ascii=False).replace('</', '<\\/')
 
     p0_pct = round(stats['p0'] / stats['total'] * 100) if stats['total'] else 0
     p1_pct = round(stats['p1'] / stats['total'] * 100) if stats['total'] else 0
@@ -324,7 +324,7 @@ function renderTable(data) {{
     if (c.steps) {{
       const preview = esc(c.steps.split('\\n').slice(0,2).join('\\n'));
       const full = br(c.steps);
-      stepsHtml = '<div class="steps-cell"><div class="steps-preview" onclick="var n=this.nextElementSibling;n.classList.toggle(\'open\');this.style.display=n.classList.contains(\'open\')?\'none\':\'\'">'+preview+'<br><small>…点击展开</small></div><div class="steps-full">'+full+'</div></div>';
+      stepsHtml = '<div class="steps-cell"><div class="steps-preview" onclick="var n=this.nextElementSibling;n.classList.toggle(\\'open\\');this.style.display=n.classList.contains(\\'open\\')?\\'none\\':\\'\\'">'+preview+'<br><small>…点击展开</small></div><div class="steps-full">'+full+'</div></div>';
     }}
     rows.push('<tr>'+
       '<td><code>'+esc(c.id)+'</code></td>'+
