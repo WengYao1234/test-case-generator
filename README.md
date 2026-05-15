@@ -49,7 +49,7 @@ ln -s /path/to/test-case-generator ~/.qwen/skills/test-case-generator
 ### 常见问题
 
 **Q: 首次运行经验库为空怎么办？**
-4 个读库 Agent 会检测到空库后自动降级为"跳过经验注入"模式，不影响主流程。第二轮开始经验库逐步积累，自动生效。
+4 个读库 Agent 会检测到空库后自动降级为"跳过经验注入"模式，不影响主流程。仓库提供 `experience-seed/` 脱敏种子库（翻车案例 + 模板 + 业务规则），首次使用时可将其内容复制到 `experience/` 目录启动经验闭环。第二轮开始经验库逐步积累，自动生效。
 
 **Q: 只想生成少量用例（轻量模式）？**
 在对话中加 `--light` 或说"轻量模式"，总控会跳过 Phase 2a-2d 四专员并行，改由 test-aggregator 直接从 test-architect 产出生成用例。详见下文"流水线模式"。
@@ -261,6 +261,11 @@ test-case-generator/
 ├── README.md                             ← 本文件
 ├── .archive/
 │   └── _archived_test-designer.md        ← 旧版（已归档）
+├── experience-seed/
+│   ├── _index.md                         ← 脱敏种子库索引
+│   ├── failure-cases.md                  ← 翻车案例种子
+│   ├── templates.md                      ← 用例模板种子
+│   └── training-data.md                  ← 业务规则+范例种子
 ├── prompts/
 │   ├── context-collector.md              ← Phase 0
 │   ├── feature-documenter.md             ← Phase 0.5（条件触发，读经验库）

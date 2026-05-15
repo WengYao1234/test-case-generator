@@ -30,7 +30,8 @@ HTML 报告**内嵌交互功能**（搜索、筛选、排序、CSV 下载），�
 调用脚本生成自包含 HTML。优先探测可用的 Python 命令（`python3` → `python` → `py -3`），然后执行：
 
 ```bash
-python3 tools/export_html.py "[_test-cases.md路径]" "[项目根目录]/output/[模块名]_测试报告.html" "[模块名]"
+# 按 python3 → python → py -3 顺序探测，用第一个可用的
+<PYTHON> tools/export_html.py "[_test-cases.md路径]" "[项目根目录]/output/[模块名]_测试报告.html" "[模块名]"
 ```
 
 生成的 HTML 包含：
@@ -45,7 +46,8 @@ python3 tools/export_html.py "[_test-cases.md路径]" "[项目根目录]/output/
 若用户明确要求 CSV 文件，额外调用（同样遵循 python3 → python → py -3 探测）：
 
 ```bash
-python3 tools/export_csv.py "[_test-cases.md路径]" "[项目根目录]/output/[模块名]_测试用例.csv"
+# 按 python3 → python → py -3 顺序探测，用第一个可用的
+<PYTHON> tools/export_csv.py "[_test-cases.md路径]" "[项目根目录]/output/[模块名]_测试用例.csv"
 ```
 
 > 注：HTML 报告已内置 CSV 下载按钮，通常无需单独生成 CSV。
