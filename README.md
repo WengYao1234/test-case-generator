@@ -41,7 +41,7 @@ ln -s /path/to/test-case-generator ~/.qwen/skills/test-case-generator
 
 1. 启动 Qwen Code，进入目标项目目录
 2. 输入一段功能描述（或直接粘贴 `examples/input/需求描述.md` 的内容）
-3. Skill 自动激活，总控询问项目名称和输出格式后，全自动推进 10 个 Agent 流水线
+3. Skill 自动激活，总控询问模块/功能名称和输出格式后，全自动推进 10 个 Agent 流水线
 4. 产出在 `output/` 目录下：`测试报告.html`（双击浏览器打开即可）
 
 > 💡 HTML 报告包含：仪表盘统计、交互式用例表格（搜索/筛选/排序/展开）、一键 CSV 下载按钮。
@@ -140,7 +140,7 @@ Phase 4: experience-evolver ────→ experience/（三类库增量更新�
                                   _experience-result.md
 ```
 
-**用户交互点仅三处：** 开始前问项目名称 + 问输出格式 + 是否轻量模式。其余全自动。
+**用户交互点仅三处：** 开始前问模块/功能名称 + 问输出格式 + 是否轻量模式。其余全自动。
 
 > 💡 **轻量模式：** 说「轻量模式」或 `--light`，跳过四专员并行，直接 6 Agent 出结果（10-30 条用例）。详见 SKILL.md「流水线模式」。
 
@@ -280,7 +280,8 @@ test-case-generator/
 │   └── experience-evolver.md             ← Phase 4 三类库
 ├── references/
 │   ├── methodology.md                    ← 测试方法工具箱
-│   └── output-templates.md               ← Markdown/CSV 模板
+│   ├── output-templates.md               ← Markdown/CSV 模板
+│   └── naming-conventions.md             ← 命名规范单一事实来源
 └── tools/
     ├── export_html.py                  ← HTML 测试报告（主输出）
     ├── export_csv.py                   ← CSV 导出（可选）
