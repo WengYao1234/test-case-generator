@@ -10,7 +10,7 @@
 
 ### 环境要求
 - **Qwen Code**（v0.14+）
-- **Python 3.8+**（仅用于 CSV/Markdown 导出脚本）
+- **Python 3.8+**（用于 HTML/CSV/Markdown 导出脚本）
 
 ### 安装（接入 Qwen Code）
 

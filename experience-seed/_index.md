@@ -43,7 +43,7 @@ last_updated: 2026-05-15
 首次使用 test-case-generator 时，将 `experience-seed/` 下所有 `.md` 文件复制到项目根目录的 `experience/` 目录：
 
 ```bash
-cp experience-seed/*.md experience/
+mkdir -p experience && cp experience-seed/*.md experience/
 ```
 
 之后经验库将由 Phase 4 experience-evolver 自动增量更新。

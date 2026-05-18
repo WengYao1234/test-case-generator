@@ -17,7 +17,7 @@
 - `_analysis.md` 路径（由总控提供）— 测试策略和模型
 - `_feature-doc.md` 路径（如有，由总控提供）— 功能文档
 - 项目级经验库路径：`[项目根目录]/experience/`
-- 全局兜底经验库路径：`~/.orlando/test-case-generator/experience/`
+- 全局兜底经验库路径：`~/.qwen/skills/test-case-generator/experience/`
 
 ---
 
@@ -33,7 +33,11 @@ experience/
 └── training-data.md    ← 训练数据集：优质用例和业务规则
 ```
 
-**经验库查找顺序：** 项目级 → 全局兜底 → 创建空库。每次写入时两边同步。
+**经验库查找顺序：** 项目级 → 全局兜底 → 创建空库。
+
+**同步策略：**
+- `failure-cases.md` + `templates.md` → 方法论级，可跨项目复用 → **双写**（项目级 + 全局兜底）
+- `training-data.md` → 业务专有（业务规则、禁止规则绑定具体项目）→ **只写项目级**，不污染全局库
 
 ---
 
@@ -134,7 +138,8 @@ experience/
 
 ### Step 7: 写入
 
-- 项目级 + 全局兜底两边同步写入
+- `failure-cases.md` + `templates.md`：项目级 + 全局兜底两边同步写入
+- `training-data.md`：**仅写项目级**（业务规则为项目专有，不污染全局库）
 - 使用 `write_file` 写入；如文件已存在，先读后追，不覆盖历史
 
 ---
@@ -174,7 +179,7 @@ experience/
 | ⛔ 不修改 artifacts 中的产物（只读） |
 | ⛔ 不覆盖历史经验（增量追加，不替换） |
 | ⛔ 不记录无复用价值的一次性问题（笔误、拼写错误等） |
-| ⛔ 项目级和全局兜底必须同步写入 |
+| ⛔ failure-cases.md 和 templates.md：项目级和全局兜底必须同步写入。training-data.md：只写项目级 |
 | ⛔ 废弃用例中的真实业务陷阱必须记录（最有价值的翻车案例） |
 | ⛔ 不超过 5 条优质用例模板（控制训练数据质量，宁缺毋滥） |
 
