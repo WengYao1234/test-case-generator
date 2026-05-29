@@ -75,7 +75,11 @@ Phase 3: data-exporter（子Agent）
     ├── grep 校验关键结构：标题/统计卡片/表格/搜索/筛选/排序/步骤展开/CSV 下载相关标记存在
     └── 如配置 Playwright MCP，可选打开 HTML 实测交互渲染
     ↓
-🎉 通知用户：交付物已生成 → Phase 4 后台异步执行
+🎉 通知用户：交付物已生成（附 HTML 路径）
+    ↓
+Phase 4: experience-evolver（**必执行收尾步，不可跳过**）
+    ↓
+**Phase 4 出口校验（总控亲自执行）**：确认 `_experience-result.md` 存在 + experience 库文件已更新
 ```
 
 总控在每个 Phase 只做：调度 → 等待产物 → 门禁判定 → 推进下一 Phase。**例外：Phase 3 完成后总控必须亲自执行出口格式校验（机械检查），不调度子Agent。**
@@ -107,7 +111,7 @@ quality-gatekeeper（门禁简化：仅 L2 分类筛选 + L3 核心指标）
     ↓
 Phase 3: data-exporter（多标签 HTML）
     ↓
-Phase 4: experience-evolver（后台异步）
+Phase 4: experience-evolver（必执行收尾步，不可跳过）
 ```
 
 轻量模式下：
@@ -116,14 +120,16 @@ Phase 4: experience-evolver（后台异步）
 - quality-gatekeeper 仅执行 L2 分类筛选（含废弃率）+ L3 核心两项（覆盖率/边界值）
 - 用例数通常 10-30 条
 
-### Phase 4 异步化
+### Phase 4 必执行（先通知，后归档，不可跳过）
 
-Phase 3 出口校验通过后，总控**立即通知用户交付物已生成**（附 HTML 文件路径），然后**后台异步**调度 Phase 4 experience-evolver。经验归档不阻塞用户获取交付物。
+Phase 3 出口校验通过后，总控**先立即通知用户交付物已生成**（附 HTML 文件路径，让用户第一时间拿到结果），**随后必须继续调度 Phase 4 experience-evolver 完成经验归档**——这是经验闭环（L5）的落地环节，**不是可选项**。
+
+> ⛔ **严禁**把 Phase 4 当作"后台/异步/事后"任务而在通知用户后就结束对话。单线程 Agent 没有真正的后台线程，"通知用户"之后总控**必须接着执行 Phase 4 并做出口校验**，确认 `_experience-result.md` 已写出、且 experience 库（项目级 + 全局兜底）文件已增量更新，才算本轮完成。
 
 ### 逃生口（异常降级）
 - Phase 2a-2d 某专员连续失败 2 次 → 该类型标记"无法覆盖"，aggregator 从 `_analysis.md` 补充基础用例
 - quality-gatekeeper 连续 FAIL 2 次 → 输出 PASS_WITH_WARNINGS，标记未达标项，继续 Pipeline
-- Phase 4 失败 → 记录日志，不阻塞交付物产出（已异步，用户不受影响）
+- Phase 4 **执行失败**（已尝试但报错）→ 记录失败原因到 `_experience-result.md`，不回退已交付的 HTML（交付物已先行通知用户）。**注意：失败 ≠ 跳过**——必须先实际尝试 Phase 4，不得借口"异步"直接略过
 
 ### retry 上下文回收
 同 Phase 重试（≤2 次）时，总控**不重复注入**上一次完整失败产物 + 全量原始输入，改为注入：原始输入摘要 + 上一次失败的门禁摘要/失败原因（≤10 行）+ 明确修复指令。避免 retry 时上下文翻倍。细则见 `references/context-budget.md` §6。
@@ -155,10 +161,14 @@ Phase 3 出口校验通过后，总控**立即通知用户交付物已生成**�
 | 总控不做需求分析、不建模型、不写用例、不导出、不归档 |
 | Phase 2 小组 2a-2d 并行调度，2e 在四专员全部完成后调度 |
 | Phase 2 产物必须通过 quality-gatekeeper 四层门禁（分类筛选 + 量化指标 + 高危核查 + L4 审核清单） |
+| **标准模式下总控机械校验门禁报告完整性**：`_verification-phase2.md` 必须含「第四层」L4 清单与 L3.1~L3.9 九项指标；缺失则判定门禁未完成，重调度 gatekeeper 补全（轻量模式豁免） |
 | 门禁 FAIL 条件：废弃率 >15% / 测试点覆盖率 <95% / 边界值覆盖 <100% / 高危场景遗漏 / 测试标签覆盖率 <100% |
 | 总控检视用「读取文件」/「全局搜索」/「执行命令」验证产物（工具动词→各平台实际工具名见 `references/platform-profiles.md`） |
 | 同一 Phase 重试 ≤2 次，超限报失败 |
 | 门禁 FAIL 必须回退，不能强行继续 |
 | PASS_WITH_WARNINGS 直接继续，不中断问用户 |
 | 不手动改子Agent 产物，重调度修复 |
+| **Phase 4 是必执行收尾步**：通知用户交付物后，总控必须接着执行 Phase 4 并校验 `_experience-result.md` + experience 库已更新；严禁以"异步/后台"为由跳过 |
+| **子Agent 不得即兴编写并执行临时脚本来生成 markdown 产物**（如 aggregator 写 merge_*.py 拼接用例）；产物须由子Agent 直接产出。唯一例外：data-exporter 调用既有 `tools/*.py` 导出 HTML/CSV |
+| **artifacts/ 只允许出现命名规范约定的 `_*.md` 文件**；子Agent 不得残留临时脚本等其他文件 |
 | 改 prompts/ 文件前问用户 |
