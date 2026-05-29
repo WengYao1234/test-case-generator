@@ -140,9 +140,9 @@ Phase 4: experience-evolver ────→ experience/（三类库增量更新�
                                   _experience-result.md
 ```
 
-**用户交互点仅三处：** 开始前问模块/功能名称 + 问输出格式 + 是否轻量模式。其余全自动。
+**用户交互点仅两处：** 开始前问模块/功能名称 + 问输出格式。模式由总控自动判级（用户可 `--light` / `--full` 手动覆盖），其余全自动。
 
-> 💡 **轻量模式：** 说「轻量模式」或 `--light`，跳过四专员并行，直接 6 Agent 出结果（10-30 条用例）。详见 SKILL.md「流水线模式」。
+> 💡 **轻量模式：** 总控自动判级，简单功能走 6 Agent（10-30 条用例）；也可说「轻量模式」或 `--light` 强制。详见 SKILL.md「流水线模式」。
 
 ---
 
@@ -226,7 +226,7 @@ Phase 4: experience-evolver ────→ experience/（三类库增量更新�
 标签由 test-architect 在测试点打标 → test-designer 继承 → gatekeeper L3.9 核查覆盖率 → data-exporter 导出到 CSV。
 
 ### Phase 3 — data-exporter
-导出 Markdown 测试设计文档 + CSV（UTF-8 BOM / CRLF / 含测试标签列）。
+导出自包含的多标签 **HTML 测试报告**（默认主输出，6 标签页：仪表盘/测试策略/测试点/模型/交互式用例表格/质量门禁，零依赖打开即用），可选附加 CSV（UTF-8 BOM / CRLF / 含测试标签列）。
 
 ### Phase 4 — experience-evolver
 从本轮产物提取经验，增量更新三类知识库：

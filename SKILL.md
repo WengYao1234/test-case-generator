@@ -68,10 +68,10 @@ Phase 2: 测试设计小组（并行子Agent）
     quality-gatekeeper（四层门禁：分类筛选 + 量化指标 + 高危核查 + L4 审核清单）
 Phase 3: data-exporter（子Agent）
     ↓
-    **Phase 3 出口校验（总控亲自执行）**
-    ├── 打开 HTML → 确认标题/统计卡片/表格渲染正确
-    ├── 验证搜索/筛选/排序/步骤展开交互可用
-    └── 验证 CSV 下载按钮可用
+    **Phase 3 出口校验（总控亲自执行——机械检查）**
+    ├── 确认 HTML 文件存在且非空（read_file/run_shell_command）
+    ├── grep 校验关键结构：标题/统计卡片/表格/搜索/筛选/排序/步骤展开/CSV 下载相关标记存在
+    └── 如配置 Playwright MCP，可选打开 HTML 实测交互渲染
     ↓
 🎉 通知用户：交付物已生成 → Phase 4 后台异步执行
 ```
@@ -111,7 +111,7 @@ Phase 4: experience-evolver（后台异步）
 轻量模式下：
 - 跳过 Phase 2a-2d 四专员并行调度
 - test-aggregator 直接从 `_analysis.md` 提取测试点并生成用例
-- quality-gatekeeper 仅执行 L2 分类筛选 + L3 核心三项（覆盖率/边界值/废弃率）
+- quality-gatekeeper 仅执行 L2 分类筛选（含废弃率）+ L3 核心两项（覆盖率/边界值）
 - 用例数通常 10-30 条
 
 ### Phase 4 异步化
