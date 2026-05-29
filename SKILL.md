@@ -15,18 +15,19 @@ metadata:
 
 ---
 
-## 启动准备：预读经验库
+## 启动准备：选择性预读经验库
 
-在调度任何子Agent前，总控一次性读取三个经验库文件，将内容作为上下文传给后续 Agent，避免各 Agent 各自 IO：
+在调度任何子Agent前，总控**选择性**检索经验库（不再一次性读三库全文，避免上下文雪球膨胀）。完整注入规则见 `references/context-budget.md`（上下文预算 SSOT）。
 
-1. 读项目级经验库 `[项目根目录]/experience/` → 如空，读全局兜底 `~/.qwen/skills/test-case-generator/experience/`
-2. 提取三类库内容（`failure-cases.md` / `templates.md` / `training-data.md`）
-3. 各 Agent 调度时，在输入中附带对应经验库内容：
-   - feature-documenter → 附带 `training-data.md` 内容
-   - test-architect → 附带 `failure-cases.md` 内容
-   - 四专员 → 附带 `templates.md` 内容
-   - quality-gatekeeper → 附带 `failure-cases.md` 内容
-4. 经验库为空（冷启动）→ 各 Agent 按 prompt 内「冷启动」分支正常执行
+1. 定位经验库：项目级 `[项目根目录]/experience/` → 如空，读全局兜底 `~/.qwen/skills/test-case-generator/experience/`
+2. 读 `_index.md`（索引）+ 三个库各自的 `## 滚动摘要` 头作为全景
+3. 用**当前模块名 + 平台类型 + 测试类型关键词**匹配 `_index.md` 归档标签，命中条目 → 定向 `read_file` 取对应库片段
+4. 各 Agent 调度时按 `context-budget.md` §1 注入对应片段（含软预算）：
+   - feature-documenter → `training-data.md` 命中片段（经验 ≤40 行）
+   - test-architect → `failure-cases.md` 命中片段（经验 ≤40 行）
+   - 四专员 → `templates.md` 对应类型命中片段（经验 ≤30 行）
+   - quality-gatekeeper → `failure-cases.md` 命中片段（经验 ≤40 行）
+5. 经验库为空（冷启动）→ 各 Agent 按 prompt 内「冷启动」分支正常执行
 
 ---
 
@@ -80,7 +81,7 @@ Phase 3: data-exporter（子Agent）
 
 Phase 0.5 由总控根据 `_context.md` 是否已包含详细功能说明来自动判断。无需询问用户。
 
-各子Agent 在调度时由总控附带预读的经验库内容，不再各自读盘。
+各子Agent 在调度时由总控附带选择性检索的经验库片段，不再各自读盘。artifact 在 Phase 间传递时**默认走摘要**（各产物首部 `## 摘要` 头），下游需要逐条细节再读正文；仅 data-exporter（导出）、quality-gatekeeper（判用例）、experience-evolver（追经验库）读对应正文全文。注入与预算细则见 `references/context-budget.md`。
 
 ---
 
@@ -122,6 +123,9 @@ Phase 3 出口校验通过后，总控**立即通知用户交付物已生成**�
 - Phase 2a-2d 某专员连续失败 2 次 → 该类型标记"无法覆盖"，aggregator 从 `_analysis.md` 补充基础用例
 - quality-gatekeeper 连续 FAIL 2 次 → 输出 PASS_WITH_WARNINGS，标记未达标项，继续 Pipeline
 - Phase 4 失败 → 记录日志，不阻塞交付物产出（已异步，用户不受影响）
+
+### retry 上下文回收
+同 Phase 重试（≤2 次）时，总控**不重复注入**上一次完整失败产物 + 全量原始输入，改为注入：原始输入摘要 + 上一次失败的门禁摘要/失败原因（≤10 行）+ 明确修复指令。避免 retry 时上下文翻倍。细则见 `references/context-budget.md` §6。
 
 ## 用户交互点
 

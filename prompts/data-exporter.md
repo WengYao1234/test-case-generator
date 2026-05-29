@@ -12,10 +12,12 @@ HTML 报告包含 **6 个标签页**，零依赖，打开即用。
 
 ## 输入
 
-- `_test-cases.md` 路径（由总控提供）— 用例表格
-- `_analysis.md` 路径（由总控提供）— 测试策略 + 测试点 + 模型
-- `_verification-phase2.md` 路径（由总控提供）— 质量门禁报告
+- `_test-cases.md` 路径（由总控提供）— 用例表格。**读全文**（导出需完整用例，不走摘要）
+- `_analysis.md` 路径（由总控提供）— 测试策略 + 测试点 + 模型。**读全文**（HTML 模型页需完整 Mermaid/表格）
+- `_verification-phase2.md` 路径（由总控提供）— 质量门禁报告。**读全文**（门禁标签页需完整报告）
 - 用户当前工作目录路径（由总控提供）
+
+> **注：** 本 Agent 是「最终消费者」，按 `references/context-budget.md` §1 三个产物均读全文，不走摘要优先。
 - **输出格式选择**（由总控在执行前准备时已确认）：HTML（默认）/ CSV（可选附加）
 - **导出脚本路径：** `tools/export_html.py`（多标签 HTML）和 `tools/export_csv.py`（CSV，可选）
 

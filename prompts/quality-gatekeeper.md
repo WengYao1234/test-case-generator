@@ -15,11 +15,13 @@
 
 ## 输入
 
-- `_test-cases.md` 路径（由总控提供）— 汇总员合并后的完整用例文件
-- `_test-cases-flow.md` / `_test-cases-param.md` / `_test-cases-data.md` / `_test-cases-combo.md` 路径（如有，由总控提供）— 四专员分部文件，用于交叉校验。**轻量模式下不存在**
-- `_analysis.md` 路径（由总控提供）— 测试架构师的测试点清单，用于覆盖率校验
-- **经验库** `failure-cases.md` 路径（如有）—— 项目级优先，其次全局兜底。用于交叉校验：历史翻车案例本轮是否再次遗漏
+- `_test-cases.md` 路径（由总控提供）— 汇总员合并后的完整用例文件。**读全文**（判用例必须逐条）
+- `_test-cases-flow.md` / `_test-cases-param.md` / `_test-cases-data.md` / `_test-cases-combo.md` 路径（如有，由总控提供）— 四专员分部文件，用于交叉校验。**先读 `## 摘要`**，需核对具体用例再读正文。**轻量模式下不存在**
+- `_analysis.md` 路径（由总控提供）— 测试架构师的测试点清单，用于覆盖率校验。**先读 `## 摘要`**，L3.1/L3.3 逐点核对时再读测试点清单正文
+- **经验库** `failure-cases.md` 命中片段（如有，由总控按 `references/context-budget.md` 选择性注入）—— 用于交叉校验：历史翻车案例本轮是否再次遗漏
 - **模式标记**（由总控提供）— `--light` 表示轻量模式，省略表示标准模式
+
+> **注入预算：** 经验片段 ≤40 行；超出只保留最相关 Top-K 条，其余以"另有 N 条，需要时 read_file failure-cases.md"提示。
 
 ---
 

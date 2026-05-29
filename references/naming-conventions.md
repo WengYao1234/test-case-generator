@@ -14,7 +14,7 @@
 | `experience-seed/` | 脱敏种子库 | 首次使用时 `mkdir -p experience && cp experience-seed/*.md experience/` |
 | `~/.qwen/skills/test-case-generator/experience/` | 全局兜底经验库 | 跨项目复用的方法论级经验 |
 | `prompts/` | 子 Agent 提示词 | 10 个 prompt + 总控 SKILL.md |
-| `references/` | 参考文档 | 方法论、输出模板、命名规范 |
+| `references/` | 参考文档 | 方法论、输出模板、命名规范、上下文预算 |
 | `tools/` | 导出脚本 | export_html.py、export_csv.py、export_md.py |
 
 ---
