@@ -30,7 +30,7 @@
 - **经验库** `failure-cases.md` 命中片段（如有，由总控按 `references/context-budget.md` 选择性注入）—— 历史漏测场景，在测试点扫描时对照覆盖
 
 > **先读摘要：** 读 `_context.md` / `_feature-doc.md` 时先看 `## 摘要` 头；建模等需要逐条细节时再读对应正文章节。
-> **注入预算：** 经验片段 ≤40 行；超出只保留最相关 Top-K 条，其余以"另有 N 条，需要时 read_file failure-cases.md"提示。
+> **注入预算：** 经验片段 ≤40 行；超出只保留最相关 Top-K 条，其余以"另有 N 条，需要时「读取文件」failure-cases.md"提示。
 
 ---
 

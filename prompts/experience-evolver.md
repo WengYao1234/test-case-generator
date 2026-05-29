@@ -17,7 +17,7 @@
 - `_analysis.md` 路径（由总控提供）— 测试策略和模型
 - `_feature-doc.md` 路径（如有，由总控提供）— 功能文档
 - 项目级经验库路径：`[项目根目录]/experience/`
-- 全局兜底经验库路径：`~/.qwen/skills/test-case-generator/experience/`
+- 全局兜底经验库路径：`<全局技能目录>`（由总控按平台解析后传入；解析规则见 `references/platform-profiles.md`）
 
 ---
 
@@ -163,7 +163,7 @@ experience/
 - `failure-cases.md` + `templates.md`：项目级 + 全局兜底两边同步写入
 - `training-data.md`：**仅写项目级**（业务规则为项目专有，不污染全局库）
 - 各库首部的 `## 滚动摘要` 头同步更新
-- 使用 `write_file` 写入；如文件已存在，先读后追，不覆盖历史
+- 使用「写入文件」写入；如文件已存在，先读后追，不覆盖历史
 
 ---
 

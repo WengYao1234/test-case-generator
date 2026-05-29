@@ -19,9 +19,10 @@ metadata:
 
 在调度任何子Agent前，总控**选择性**检索经验库（不再一次性读三库全文，避免上下文雪球膨胀）。完整注入规则见 `references/context-budget.md`（上下文预算 SSOT）。
 
-1. 定位经验库：项目级 `[项目根目录]/experience/` → 如空，读全局兜底 `~/.qwen/skills/test-case-generator/experience/`
+0. **识别平台**：读 `references/platform-profiles.md`，确定当前 Agent 平台（Qwen Code / Cursor / Claude Code / 通用），解析占位符 `<全局技能目录>` 与工具动词映射。无法确定平台时按"通用 Agent"处理（仅用项目级经验库，跳过全局兜底）。
+1. 定位经验库：项目级 `[项目根目录]/experience/` → 如空，读全局兜底 `<全局技能目录>`（按平台档案解析）
 2. 读 `_index.md`（索引）+ 三个库各自的 `## 滚动摘要` 头作为全景
-3. 用**当前模块名 + 平台类型 + 测试类型关键词**匹配 `_index.md` 归档标签，命中条目 → 定向 `read_file` 取对应库片段
+3. 用**当前模块名 + 平台类型 + 测试类型关键词**匹配 `_index.md` 归档标签，命中条目 → 定向「读取文件」取对应库片段
 4. 各 Agent 调度时按 `context-budget.md` §1 注入对应片段（含软预算）：
    - feature-documenter → `training-data.md` 命中片段（经验 ≤40 行）
    - test-architect → `failure-cases.md` 命中片段（经验 ≤40 行）
@@ -70,7 +71,7 @@ Phase 2: 测试设计小组（并行子Agent）
 Phase 3: data-exporter（子Agent）
     ↓
     **Phase 3 出口校验（总控亲自执行——机械检查）**
-    ├── 确认 HTML 文件存在且非空（read_file/run_shell_command）
+    ├── 确认 HTML 文件存在且非空（「读取文件」/「执行命令」）
     ├── grep 校验关键结构：标题/统计卡片/表格/搜索/筛选/排序/步骤展开/CSV 下载相关标记存在
     └── 如配置 Playwright MCP，可选打开 HTML 实测交互渲染
     ↓
@@ -139,7 +140,7 @@ Phase 3 出口校验通过后，总控**立即通知用户交付物已生成**�
 ├── output/        ← 交付物（测试报告.html）
 └── experience/    ← 项目级经验库
 
-[全局兜底] ~/.qwen/skills/test-case-generator/experience/
+[全局兜底] <全局技能目录>  （按平台解析，见 references/platform-profiles.md）
 ```
 
 经验库由三类文件组成：翻车案例库 / 优质模板库 / 训练数据集。查找：项目级优先 → 全局兜底 → 初始化空库。归档时两边同步增量写入。
@@ -155,7 +156,7 @@ Phase 3 出口校验通过后，总控**立即通知用户交付物已生成**�
 | Phase 2 小组 2a-2d 并行调度，2e 在四专员全部完成后调度 |
 | Phase 2 产物必须通过 quality-gatekeeper 四层门禁（分类筛选 + 量化指标 + 高危核查 + L4 审核清单） |
 | 门禁 FAIL 条件：废弃率 >15% / 测试点覆盖率 <95% / 边界值覆盖 <100% / 高危场景遗漏 / 测试标签覆盖率 <100% |
-| 总控检视用 read_file/grep_search/run_shell_command 验证产物 |
+| 总控检视用「读取文件」/「全局搜索」/「执行命令」验证产物（工具动词→各平台实际工具名见 `references/platform-profiles.md`） |
 | 同一 Phase 重试 ≤2 次，超限报失败 |
 | 门禁 FAIL 必须回退，不能强行继续 |
 | PASS_WITH_WARNINGS 直接继续，不中断问用户 |

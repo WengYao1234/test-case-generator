@@ -12,10 +12,10 @@
 | `output/` | 交付物目录 | 持久化，HTML/CSV/MD 最终产出 |
 | `experience/` | 项目级经验库 | 项目根目录下，gitignore |
 | `experience-seed/` | 脱敏种子库 | 首次使用时 `mkdir -p experience && cp experience-seed/*.md experience/` |
-| `~/.qwen/skills/test-case-generator/experience/` | 全局兜底经验库 | 跨项目复用的方法论级经验 |
+| `<全局技能目录>` | 全局兜底经验库 | 跨项目复用的方法论级经验；占位符按平台解析，见 `references/platform-profiles.md` |
 | `prompts/` | 子 Agent 提示词 | 10 个 prompt + 总控 SKILL.md |
-| `references/` | 参考文档 | 方法论、输出模板、命名规范、上下文预算 |
-| `tools/` | 导出脚本 | export_html.py、export_csv.py、export_md.py |
+| `references/` | 参考文档 | 方法论、输出模板、命名规范、上下文预算、平台档案 |
+| `tools/` | 脚本 | export_html.py、export_csv.py、export_md.py、install.py |
 
 ---
 
@@ -146,6 +146,7 @@
 | `tools/export_html.py` | 生成自包含 HTML 报告 | data-exporter（默认） |
 | `tools/export_csv.py` | 生成 CSV 文件 | data-exporter（可选附加） |
 | `tools/export_md.py` | 生成 Markdown 设计文档 | data-exporter（兼容输出，按需） |
+| `tools/install.py` | 多平台安装（软链接/复制到目标 Agent skills 目录 + 播种经验库） | 用户（一次性安装） |
 
 **Python 命令探测顺序：** `python3` → `python` → `py -3`
 
@@ -168,5 +169,6 @@
 | Phase 3 | `prompts/data-exporter.md` |
 | Phase 4 | `prompts/experience-evolver.md` |
 | 模板 | `references/output-templates.md` |
+| 平台档案 | `references/platform-profiles.md` |
 | 种子库 | `experience-seed/_index.md` |
-| 导出脚本 | `tools/export_*.py` |
+| 脚本 | `tools/export_*.py`、`tools/install.py` |

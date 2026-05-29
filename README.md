@@ -9,39 +9,56 @@
 ## 快速开始
 
 ### 环境要求
-- **Qwen Code**（v0.14+）
-- **Python 3.8+**（用于 HTML/CSV/Markdown 导出脚本）
+- **支持 Agent Skills（SKILL.md）的 Agent**：Qwen Code / Cursor / Claude Code / 其他遵循 SKILL.md 约定的 Agent
+- **Python 3.8+**（用于 HTML/CSV/Markdown 导出脚本 + 安装脚本）
 
-### 安装（接入 Qwen Code）
+> 本技能是纯 prompt 驱动的 Agent Skill，平台差异（工具名/全局目录/触发方式）集中在 `references/platform-profiles.md`。新增平台只需在该表加一行。
 
-**方式一：直接引用本地路径**
+### 安装
 
-在 Qwen Code 对话中输入：
+**一键安装（推荐，跨平台）**
+
+```bash
+python tools/install.py --agent cursor     # 或 qwen / claude
+python tools/install.py                     # 省略 --agent 时自动探测
+python tools/install.py --list              # 查看支持的平台
 ```
-/add-skill /path/to/test-case-generator
-```
 
-或者在你的项目 `.qwen/skills/` 目录下创建符号链接：
+脚本会把技能软链接（Windows 无权限时自动回退为复制）到目标 Agent 的 skills 目录，并从 `experience-seed/` 播种项目级经验库。
+
+**手动安装（按平台）**
+
+<details>
+<summary>Qwen Code</summary>
+
 ```bash
 ln -s /path/to/test-case-generator ~/.qwen/skills/test-case-generator
 ```
+或在对话中 `/add-skill /path/to/test-case-generator`，或在 `settings.json` 配置 `"skills": { "paths": ["/path/to/test-case-generator"] }`。
+</details>
 
-**方式二：配置 skills 目录**
+<details>
+<summary>Cursor</summary>
 
-编辑 Qwen Code 的 `settings.json`，添加 skills 路径：
-```json
-{
-  "skills": {
-    "paths": ["/path/to/test-case-generator"]
-  }
-}
+```bash
+ln -s /path/to/test-case-generator ~/.cursor/skills/test-case-generator
 ```
+（Cursor 技能目录因版本而异，可能为 `~/.cursor/skills-cursor/`；以 `install.py` 探测结果为准。）
+</details>
+
+<details>
+<summary>Claude Code</summary>
+
+```bash
+ln -s /path/to/test-case-generator ~/.claude/skills/test-case-generator
+```
+</details>
 
 ### 使用
 
-1. 启动 Qwen Code，进入目标项目目录
+1. 启动你的 Agent，进入目标项目目录
 2. 输入一段功能描述（或直接粘贴 `examples/input/需求描述.md` 的内容）
-3. Skill 自动激活，总控自动判断复杂度并选择标准/轻量模式，全自动推进流水线
+3. Skill 自动激活，总控先识别当前平台（`platform-profiles.md`），再自动判断复杂度并选择标准/轻量模式，全自动推进流水线
 4. 产出在 `output/` 目录下：`[模块名]_测试报告.html`（双击浏览器打开即可）
 
 > 💡 多标签 HTML 报告包含：仪表盘、测试策略、测试点清单、模型（Mermaid）、交互式用例表格（搜索/筛选/排序/展开）、质量门禁报告、一键 CSV 下载。
@@ -281,18 +298,21 @@ test-case-generator/
 ├── references/
 │   ├── methodology.md                    ← 测试方法工具箱
 │   ├── output-templates.md               ← Markdown/CSV 模板
+│   ├── context-budget.md                 ← 上下文预算单一事实来源
+│   ├── platform-profiles.md              ← 跨 Agent 平台差异单一事实来源
 │   └── naming-conventions.md             ← 命名规范单一事实来源
 └── tools/
     ├── export_html.py                  ← HTML 测试报告（主输出）
     ├── export_csv.py                   ← CSV 导出（可选）
-    └── export_md.py                    ← Markdown 导出（兼容）
+    ├── export_md.py                    ← Markdown 导出（兼容）
+    └── install.py                      ← 多平台安装脚本
 ```
 
 ---
 
 ## 触发方式
 
-在 Qwen Code 中提及以下**强意图**关键词即可激活：
+在受支持的 Agent（Qwen Code / Cursor / Claude Code / 通用）中提及以下**强意图**关键词即可激活：
 - 生成测试用例、写测试用例、设计测试用例
 - 给我用例、输出测试用例
 
