@@ -329,6 +329,7 @@ test-case-generator/
 | [如何用 HARNESS 的理念设计一个 AI 驱动的 UI 自动化工程](https://testerhome.com/articles/44066) | 孙高飞 | Harness 设计模式：角色边界、状态机、产物契约、护栏规则 |
 | [5 层 AI 质量管理体系](https://testerhome.com/topics/44072) | 狂师 | L1-L5 五层质量管控框架：业务拆解→分类筛选→量化指标→三级审核→复盘闭环 |
 | 《测试架构师修炼之道：从测试工程师到测试架构师》 | 刘琛梅 | 测试方法论：四步法、等价类、边界值、路径分析、正交分析等 |
+| 《Harness Engineering》PPT | 黄佳（咖哥） | Harness 工程化理念：上下文工程、护栏与产物契约设计 |
 
 在此向以上作者表示衷心感谢。
 
