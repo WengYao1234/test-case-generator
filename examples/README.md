@@ -6,6 +6,7 @@
 - `output/用户登录_测试报告.html` — 主交付物：自包含交互式 HTML 测试报告（仪表盘 + 搜索/筛选/排序/CSV 下载）
 - `output/测试设计文档.md` — 兼容输出：Markdown 测试设计文档
 - `output/测试用例.csv` — 兼容输出：CSV 用例文件
+- `_run-log.md` — 控制面样例：总控运行账本（会话级，实跑时位于 `artifacts/_run-log.md`，非交付物，仅供观测）
 
 ## 运行方式
 

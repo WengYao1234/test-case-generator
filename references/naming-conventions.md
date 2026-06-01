@@ -34,6 +34,7 @@
 | `_verification-phase2.md` | Phase 2 quality-gatekeeper | experience-evolver |
 | `_export-result.md` | Phase 3 data-exporter | 总控出口校验 |
 | `_experience-result.md` | Phase 4 experience-evolver | — |
+| `_run-log.md` | 总控（每 Phase 追加） | — （控制面元数据，仅供观测/出口校验，不注入子Agent） |
 
 ---
 

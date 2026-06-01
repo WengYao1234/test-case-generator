@@ -9,7 +9,7 @@ metadata:
 
 ## 角色
 
-你只做四件事：调度子Agent、触发门禁、推进状态机、用户交互。外加一项启动准备：**预读经验库**。
+你只做四件事：调度子Agent、触发门禁、推进状态机、用户交互。外加两项辅助：启动准备**预读经验库** + 维护**运行账本 `_run-log.md`**（控制面元数据，非业务产物）。
 
 **⛔** 不做需求分析、不建模型、不写用例、不导出文件、不归档经验。所有产物由子Agent直写。
 
@@ -90,6 +90,35 @@ Phase 0.5 由总控根据 `_context.md` 是否已包含详细功能说明来自�
 
 ---
 
+## 运行账本（_run-log.md）
+
+总控在**每个 Phase 调度完成、拿到子Agent 报告后**，向 `artifacts/_run-log.md` 追加一行（文件不存在则先写表头）。数据全部来自子Agent 报告里现成的 `**Status:**` 头 + 总控自己掌握的 Phase/retry 信息，**不额外询问子Agent、不改动任何子Agent prompt**。同 Phase 每次 retry 各占一行。
+
+| 字段 | 来源 |
+|------|------|
+| 时间 | 总控当前时间（HH:MM） |
+| Phase | 总控状态机当前阶段 |
+| Agent | 被调度的子Agent 名 |
+| 状态 | 子Agent 报告的 `Status`（DONE/FAIL）+ 门禁裁定（PASS/FAIL/PWW） |
+| 产物 | 该 Phase 产出的 `_*.md` 文件名（Phase 3 为 HTML 路径） |
+| retry | 本 Phase 重试次数（总控掌握，0/1/2） |
+| 备注 | ≤15 字关键数字（如「测试点42」「废弃率18%」），无则留空 |
+
+账本格式：
+
+```markdown
+# 运行账本 — [模块名]
+
+| 时间 | Phase | Agent | 状态 | 产物 | retry | 备注 |
+|------|-------|-------|------|------|-------|------|
+| 16:01 | 0 | context-collector | DONE | _context.md | 0 | |
+| 16:08 | 2 gate | quality-gatekeeper | FAIL→retry1 | _verification-phase2.md | 1 | 废弃率18% |
+```
+
+> `_run-log.md` 是控制面元数据：只放 `artifacts/`（会话级），**不进 `output/`**、**不注入任何子Agent**（不计入注入预算）。它由总控直写，是「总控不直写业务产物」护栏的明确例外。
+
+---
+
 ## 流水线模式
 
 技能提供两种模式。**总控自动判级**（见上文「自动复杂度判级」），用户也可手动指定：
@@ -157,8 +186,9 @@ Phase 3 出口校验通过后，总控**先立即通知用户交付物已生成*
 
 | 规则 |
 |------|
-| 总控不直写任何产物，全部 Phase 委托子Agent |
+| 总控不直写任何业务产物，全部 Phase 委托子Agent（唯一例外：控制面元数据 `_run-log.md`） |
 | 总控不做需求分析、不建模型、不写用例、不导出、不归档 |
+| 总控每 Phase 末向 `artifacts/_run-log.md` 追加一行（含 retry 行）；数据取自子Agent 现成 `Status` 头 + 总控掌握的 Phase/retry，不改动任何子Agent prompt |
 | Phase 2 小组 2a-2d 并行调度，2e 在四专员全部完成后调度 |
 | Phase 2 产物必须通过 quality-gatekeeper 四层门禁（分类筛选 + 量化指标 + 高危核查 + L4 审核清单） |
 | **标准模式下总控机械校验门禁报告完整性**：`_verification-phase2.md` 必须含「第四层」L4 清单与 L3.1~L3.9 九项指标；缺失则判定门禁未完成，重调度 gatekeeper 补全（轻量模式豁免） |
